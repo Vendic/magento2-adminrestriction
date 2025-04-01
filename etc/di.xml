@@ -30,8 +30,9 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Framework\AppInterface">
-        <plugin sortOrder="1" name="mSPAdminRestrictionAppInterface"
-                type="MSP\AdminRestriction\Plugin\AppInterfacePlugin"/>
+
+    <type name="Magento\TwoFactorAuth\Model\TfaSession">
+        <plugin name="msp_admin_restriction_bypassTwoFactorAuth"
+                type="MSP\AdminRestriction\Plugin\BypassTwoFactorAuth"/>
     </type>
 </config>
