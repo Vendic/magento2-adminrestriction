@@ -9,6 +9,9 @@
     "suggest": {
         "msp/security-suite": "Full MageSpecialist Security Suite"
     },
+    "replace": {
+        "msp/adminrestriction": "*"
+    },
     "authors": [
         {
             "name": "Riccardo Tempesta",
