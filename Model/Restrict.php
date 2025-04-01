@@ -89,7 +89,7 @@ class Restrict implements RestrictInterface
     public function getAllowedRanges()
     {
         $ranges = $this->scopeConfig->getValue(RestrictInterface::XML_PATH_AUTHORIZED_RANGES);
-        return preg_split('/\s*[,;]+\s*/', $ranges);
+        return preg_split('/\s*[,;]+\s*/', $ranges ?? '');
     }
 
     /**
@@ -114,7 +114,7 @@ class Restrict implements RestrictInterface
         $ipAddress = $this->remoteAddress->getRemoteAddress();
 
         $allowedRanges = $this->getAllowedRanges();
-        
+
         if (!empty($allowedRanges)) {
             return $this->isMatchingIp($ipAddress, $allowedRanges);
         }

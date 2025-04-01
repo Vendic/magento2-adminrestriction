@@ -62,7 +62,7 @@ class RestrictIp extends Command
     /**
      * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output) : int
     {
         $ranges = $input->getArgument('ip');
 
@@ -90,5 +90,7 @@ class RestrictIp extends Command
         }
 
         $this->cacheManager->flush(['config']);
+
+        return self::SUCCESS;
     }
 }
