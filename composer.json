@@ -1,8 +1,8 @@
 {
-    "name": "msp/adminrestriction",
+    "name": "vendic/adminrestriction",
     "description": "Magento2 Admin IP based restriction - Member of MageSpecialist SecuritySuite",
     "require": {
-        "php": "^7.0|^8.0.0|^8.1.0",
+        "php": "^^8.2.0|^8.3.0",
         "msp/security-suite-common": "^2.0",
         "magento/magento-composer-installer": "*"
     },

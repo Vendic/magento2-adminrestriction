@@ -31,19 +31,23 @@ class CheckAdminRestriction implements ObserverInterface
     {
         // Account for the 2FA extension not being enabled.
         if ($this->moduleManager->isEnabled('Magento_TwoFactorAuth')) {
-            return;
+            return $this;
         }
 
         // When 2FA is enabled we don't need this controller. We'll bypass 2FA in
         // \MSP\AdminRestriction\Plugin\BypassTwoFactorAuth
         if ($this->scopeConfig->isSetFlag(self::XML_PATH_CONFIG_ENABLE)) {
-            return;
+            return $this;
+        }
+
+        if ($this->restrict->isEnabled() === false) {
+            return $this;
         }
 
         // Do IP whitelist check in case 2FA extension is turned off or is disabled via
         // markshust/magento2-module-disabletwofactorauth
         if ($this->restrict->isAllowed()) {
-            return;
+            return $this;
         }
 
         $this->restrictAdmin($observer);

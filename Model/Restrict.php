@@ -97,10 +97,6 @@ class Restrict implements RestrictInterface
      */
     public function isAllowed()
     {
-        if (!$this->isEnabled()) {
-            return true;
-        }
-
         // Always allow admin access in developer mode.
         if ($this->appState->getMode() === State::MODE_DEVELOPER) {
             return;
