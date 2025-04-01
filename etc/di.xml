@@ -30,4 +30,9 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\TwoFactorAuth\Model\TfaSession">
+        <plugin name="msp_admin_restriction_bypassTwoFactorAuth"
+                type="MSP\AdminRestriction\Plugin\BypassTwoFactorAuth"/>
+    </type>
 </config>

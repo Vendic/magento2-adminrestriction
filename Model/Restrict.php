@@ -21,27 +21,17 @@
 namespace MSP\AdminRestriction\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\State;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use MSP\AdminRestriction\Api\RestrictInterface;
 
 class Restrict implements RestrictInterface
 {
-    /**
-     * @var RemoteAddress
-     */
-    private $remoteAddress;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
     public function __construct(
-        RemoteAddress $remoteAddress,
-        ScopeConfigInterface $scopeConfig
+        private RemoteAddress $remoteAddress,
+        private ScopeConfigInterface $scopeConfig,
+        private State $appState
     ) {
-        $this->remoteAddress = $remoteAddress;
-        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -109,6 +99,11 @@ class Restrict implements RestrictInterface
     {
         if (!$this->isEnabled()) {
             return true;
+        }
+
+        // Always allow admin access in developer mode.
+        if ($this->appState->getMode() === State::MODE_DEVELOPER) {
+            return;
         }
 
         $ipAddress = $this->remoteAddress->getRemoteAddress();
