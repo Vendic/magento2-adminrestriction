@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MSP\AdminRestriction\Command;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use MSP\AdminRestriction\Api\RestrictInterface;
 use Magento\Framework\App\Config\ConfigResource\ConfigInterface;
-use MSP\AdminRestriction\Model\Restrict;
 
 class AddRestrictIp extends Command
 {
     public function __construct(
-        private readonly ScopeConfigInterface $config,
         private readonly ConfigInterface      $scopeConfig,
         private readonly RestrictInterface    $restrict,
     )
@@ -26,7 +25,11 @@ class AddRestrictIp extends Command
     {
         $this->setName('msp:security:admin_restriction:add_ip');
         $this->setDescription('Add IP to Admin Restriction');
-        $this->addArgument('ip', InputArgument::REQUIRED, __('Authorized comma separated IP list'));
+        $this->addArgument(
+            'ip',
+            InputArgument::REQUIRED,
+            __('Authorized comma separated IP list')->render()
+        );
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
@@ -36,7 +39,6 @@ class AddRestrictIp extends Command
         $changes = [];
         $allowedList = $this->restrict->getAllowedRanges();
 
-        // Loop over ips
         foreach ($ips as $ip) {
             try {
                 $this->validateIP($ip);
@@ -53,7 +55,7 @@ class AddRestrictIp extends Command
             $changes[] = $ip;
         }
 
-        if (!$changes) {
+        if (empty($changes)) {
             $output->writeln('<info>No changes have been made</info>');
             return 0;
         }
