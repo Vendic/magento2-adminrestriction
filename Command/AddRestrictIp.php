@@ -13,7 +13,7 @@ use Magento\Framework\App\Config\ConfigResource\ConfigInterface;
 
 class AddRestrictIp extends Command
 {
-    private const string ARG_IP = 'ip';
+    private const ARG_IP = 'ip';
 
     public function __construct(
         private readonly ConfigInterface $scopeConfig,
