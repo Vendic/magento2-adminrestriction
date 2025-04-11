@@ -13,41 +13,40 @@ use Magento\Framework\App\Config\ConfigResource\ConfigInterface;
 
 class AddRestrictIp extends Command
 {
+    private const string ARG_IP = 'ip';
+
     public function __construct(
-        private readonly ConfigInterface      $scopeConfig,
-        private readonly RestrictInterface    $restrict,
-    )
-    {
+        private readonly ConfigInterface $scopeConfig,
+        private readonly RestrictInterface $restrict,
+    ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->setName('msp:security:admin_restriction:add_ip');
-        $this->setDescription('Add IP to Admin Restriction');
-        $this->addArgument(
-            'ip',
-            InputArgument::REQUIRED,
-            __('Authorized comma separated IP list')->render()
-        );
+        $this->setName('msp:security:admin_restriction:add_ip')
+            ->setDescription('Add IP to Admin Restriction')
+            ->addArgument(
+                self::ARG_IP,
+                InputArgument::REQUIRED,
+                __('Authorized comma-separated IP list')->render()
+            );
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $inputIps = $input->getArgument('ip');
+        $inputIps = $input->getArgument(self::ARG_IP);
         $ips = explode(',', $inputIps);
-        $changes = [];
         $allowedList = $this->restrict->getAllowedRanges();
+        $changes = [];
 
         foreach ($ips as $ip) {
-            try {
-                $this->validateIP($ip);
-            } catch (\InvalidArgumentException $e) {
-                $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
-                return 1;
+            if (!$this->isValidIP($ip)) {
+                $output->writeln(sprintf('<error>Invalid IP address: %s</error>', $ip));
+                return Command::FAILURE;
             }
 
-            if (in_array($ip, $allowedList)) {
+            if (in_array($ip, $allowedList, true)) {
                 $output->writeln(sprintf('<info>IP %s already exists</info>', $ip));
                 continue;
             }
@@ -57,7 +56,7 @@ class AddRestrictIp extends Command
 
         if (empty($changes)) {
             $output->writeln('<info>No changes have been made</info>');
-            return 0;
+            return Command::SUCCESS;
         }
 
         $this->scopeConfig->saveConfig(
@@ -65,15 +64,16 @@ class AddRestrictIp extends Command
             implode(',', array_merge($allowedList, $changes))
         );
 
-        $output->writeln(sprintf('<info>IPs %s will be added to the list</info>', implode(', ', $changes)));
+        $output->writeln(sprintf(
+            '<info>IPs %s have been added to the list</info>',
+            implode(', ', $changes)
+        ));
 
-        return 0;
+        return Command::SUCCESS;
     }
 
-    private function validateIP(string $ip): void
+    private function isValidIP(string $ip): bool
     {
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            throw new \InvalidArgumentException(sprintf('Invalid IP address: %s', $ip));
-        }
+        return filter_var($ip, FILTER_VALIDATE_IP) !== false;
     }
 }
