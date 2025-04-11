@@ -63,10 +63,7 @@ class CheckAdminRestriction implements ObserverInterface
             AlertInterface::LEVEL_WARNING
         );
 
-        $this->restrictStatus->setAdminWasRestricted(false);
-
         $action = $observer->getData('controller_action');
-
         $this->lockDown->doActionLockdown($action, __('Unauthorized access attempt'));
     }
 }
