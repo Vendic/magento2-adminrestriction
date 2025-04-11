@@ -26,7 +26,8 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="msp_adminrestriction" xsi:type="object">MSP\AdminRestriction\Command\RestrictIp</item>
+                <item name="msp_adminrestriction_add_ip" xsi:type="object">MSP\AdminRestriction\Command\AddRestrictIp</item>
+                <item name="msp_adminrestriction_replace_ip" xsi:type="object">MSP\AdminRestriction\Command\RestrictIp</item>
             </argument>
         </arguments>
     </type>
